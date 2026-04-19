@@ -58,6 +58,20 @@ pipeline {
                 }
             }
         }
+        
+        stage('Deliver') {
+            steps {
+                dir('my-jenkins-app') {
+                    sh 'mvn package -DskipTests'
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+            post {
+                success {
+                    echo 'Artifact delivered successfully!'
+                }
+            }
+        }
     }
 
     post {
