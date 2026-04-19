@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         maven 'Maven'
-        hudson.plugins.sonar.SonarRunnerInstallation 'SonarQube Scanner'
     }
 
     stages {
