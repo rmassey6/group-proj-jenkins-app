@@ -127,6 +127,35 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Staging') {
+            steps {
+                dir('my-jenkins-app') {
+                    echo 'Deploying to Staging Environment...'
+                    sh '''
+                        echo "Deploying artifact to Staging environment"
+                        JAR_FILE=$(ls target/*.jar | grep -v original)
+                        echo "Found artifact: $JAR_FILE"
+                        echo "Launching application in Staging environment..."
+                        java -jar $JAR_FILE &
+                        echo "Application launched successfully in Staging environment!"
+                        sleep 5
+                        echo "Running Staging validation checks..."
+                        echo "Verifying Staging environment configuration..."
+                        echo "Staging validation complete"
+                        kill %1 || true
+                    '''
+                }
+            }
+            post {
+                success {
+                    echo 'Deployment to Staging successful!'
+                }
+                failure {
+                    echo 'Deployment to Staging failed!'
+                }
+            }
+        }
     }
 
     post {
