@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deliver') {
             steps {
                 dir('my-jenkins-app') {
@@ -69,6 +69,33 @@ pipeline {
             post {
                 success {
                     echo 'Artifact delivered successfully!'
+                }
+            }
+        }
+
+        stage('Deploy to Dev') {
+            steps {
+                dir('my-jenkins-app') {
+                    echo 'Deploying to Dev Environment...'
+                    sh '''
+                        echo "Deploying artifact to Dev environment"
+                        JAR_FILE=$(ls target/*.jar | grep -v original)
+                        echo "Found artifact: $JAR_FILE"
+                        echo "Launching application in Dev environment..."
+                        java -jar $JAR_FILE &
+                        echo "Application launched successfully in Dev environment!"
+                        sleep 5
+                        echo "Application is running in Dev environment"
+                        kill %1 || true
+                    '''
+                }
+            }
+            post {
+                success {
+                    echo 'Deployment to Dev successful!'
+                }
+                failure {
+                    echo 'Deployment to Dev failed!'
                 }
             }
         }
