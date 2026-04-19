@@ -1,0 +1,22 @@
+# Compiled output
+target/
+
+# IDE files - IntelliJ
+.idea/
+*.iml
+*.iws
+
+# IDE files - Eclipse
+.classpath
+.project
+.settings/
+
+# IDE files - VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven wrapper (optional, keep if you're using mvn wrapper)
+# .mvn/
