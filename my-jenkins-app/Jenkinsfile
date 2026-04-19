@@ -30,6 +30,18 @@ pipeline {
                     sh 'mvn test'
                 }
             }
+            post {
+                always {
+                    dir('my-jenkins-app') {
+                        jacoco(
+                            execPattern: 'target/jacoco.exec',
+                            classPattern: 'target/classes',
+                            sourcePattern: 'src/main/java',
+                            exclusionPattern: 'src/test*'
+                        )
+                    }
+                }
+            }
         }
 
         stage('SonarQube Analysis') {
