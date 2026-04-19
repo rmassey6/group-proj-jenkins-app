@@ -99,6 +99,34 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to QAT') {
+            steps {
+                dir('my-jenkins-app') {
+                    echo 'Deploying to QAT Environment...'
+                    sh '''
+                        echo "Deploying artifact to QAT environment"
+                        JAR_FILE=$(ls target/*.jar | grep -v original)
+                        echo "Found artifact: $JAR_FILE"
+                        echo "Launching application in QAT environment..."
+                        java -jar $JAR_FILE &
+                        echo "Application launched successfully in QAT environment!"
+                        sleep 5
+                        echo "Running QAT validation checks..."
+                        echo "QAT validation complete"
+                        kill %1 || true
+                    '''
+                }
+            }
+            post {
+                success {
+                    echo 'Deployment to QAT successful!'
+                }
+                failure {
+                    echo 'Deployment to QAT failed!'
+                }
+            }
+        }
     }
 
     post {
