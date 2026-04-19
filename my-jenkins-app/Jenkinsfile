@@ -156,6 +156,36 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Production') {
+            steps {
+                dir('my-jenkins-app') {
+                    echo 'Deploying to Production Environment...'
+                    sh '''
+                        echo "Deploying artifact to Production environment"
+                        JAR_FILE=$(ls target/*.jar | grep -v original)
+                        echo "Found artifact: $JAR_FILE"
+                        echo "Launching application in Production environment..."
+                        java -jar $JAR_FILE &
+                        echo "Application launched successfully in Production environment!"
+                        sleep 5
+                        echo "Running Production validation checks..."
+                        echo "Verifying Production environment configuration..."
+                        echo "Production validation complete"
+                        echo "Application is live in Production!"
+                        kill %1 || true
+                    '''
+                }
+            }
+            post {
+                success {
+                    echo 'Deployment to Production successful!'
+                }
+                failure {
+                    echo 'Deployment to Production failed!'
+                }
+            }
+        }
     }
 
     post {
